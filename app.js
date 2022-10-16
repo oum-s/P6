@@ -7,6 +7,15 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/user');
 const saucesRoutes = require('./routes/sauces');
 const path = require('path');
+const  limiteur  =  rateLimit ( { 
+	windowMs : 15  *  60  *  1000 ,  // 15 minutes 
+	max : 100 ,  // Limite chaque IP à 100 requêtes par `window` (ici, par 15 minutes) 
+	standardHeaders : true ,  // Return rate limit info dans les en-têtes `RateLimit-*` 
+	legacyHeaders : false ,  // Désactive les en-têtes `X-RateLimit-*` 
+} )
+
+// Appliquer le middleware de limitation de débit à toutes les requêtes 
+app.use( limiteur());
 
 
 mongoose.connect('mongodb+srv://oumi:piiquante@cluster0.qs1r3qf.mongodb.net/sauces?retryWrites=true&w=majority',
