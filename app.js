@@ -2,10 +2,12 @@ const express = require('express');
 // on appelle la méthode express via app
 const app = express();
 const cors = require('cors');
+const helmet = require("helmet");
 const mongoose = require('mongoose');
 const userRoutes = require('./routes/user');
 const saucesRoutes = require('./routes/sauces');
 const path = require('path');
+
 
 mongoose.connect('mongodb+srv://oumi:piiquante@cluster0.qs1r3qf.mongodb.net/sauces?retryWrites=true&w=majority',
 
@@ -18,6 +20,8 @@ mongoose.connect('mongodb+srv://oumi:piiquante@cluster0.qs1r3qf.mongodb.net/sauc
   .catch(() =>console.log('Connexion à MongoDB échouée !'));
 
 app.use(cors());
+app.use(helmet());
+app.disable('x-powered-by');
 // on ajoute un middleware qui s'applique à toutes les routes envoyés à notre serveur donc on met aucun lien
 app.use((req, res, next) => {
   // on ajoute des header sur l'objet réponse
