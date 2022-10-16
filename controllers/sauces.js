@@ -90,7 +90,7 @@ exports.likeSauce = async (req, res, next) => {
     }
 
     //ajout like
-    if(req.body.likes === 1 ){
+    if(req.body.like === 1 ){
       //si l'utilisateur n'a pas liké ou disliké la sauce, car on ne peux pas liker ET disliker en même temps
       if ( !sauce.usersLiked.includes(req.body.userId) && !sauce.usersDisliked.includes(req.body.userId) ){
         //on update
@@ -107,7 +107,7 @@ exports.likeSauce = async (req, res, next) => {
         res.status(401).json({ message : 'Sauce déjà liké'});
       }
     // sinon, on dislike
-    }else if (req.body.likes === -1){
+    }else if (req.body.like === -1){
       //si l'utilisateur n'a pas liké ou disliké la sauce, car on ne peux pas liker ET disliker en même temps
       if ( !sauce.usersLiked.includes(req.body.userId) && !sauce.usersDisliked.includes(req.body.userId) ){
         //on update
@@ -124,17 +124,17 @@ exports.likeSauce = async (req, res, next) => {
         res.status(401).json({ message : 'Sauce déjà disliké'});
       }
     //annuler le like ou dislike
-    }else if (req.body.likes === 0){
+    }else if (req.body.like === 0){
       //si l'utilisateur a liké la sauce
       if( sauce.usersLiked.includes(req.body.userId) ){
-        Sauce.updateOne({_id: req.params.id},{
-          //on retire un like 
-          $inc : { likes: -1 },
-          //on supprime le tableau
-          $pull : { usersLiked : req.body.userId}
-        })
-        .then(() => res.status(201).json({ message: "Vous avez annulé votre like" }))
-        .catch(error => res.status(400).json({ error }));
+          Sauce.updateOne({_id: req.params.id},{
+            //on retire un like 
+            $inc : { likes: -1 },
+            //on supprime le tableau
+            $pull : { usersLiked : req.body.userId}
+          })
+          .then(() => res.status(201).json({ message: "Vous avez annulé votre like" }))
+          .catch(error => res.status(400).json({ error }));
       }
 
       if( sauce.usersDisliked.includes(req.body.userId) ){
