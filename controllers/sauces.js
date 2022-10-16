@@ -147,8 +147,5 @@ exports.likeSauce = async (req, res, next) => {
         .then(() => res.status(201).json({ message: "Vous avez annulé votre dislike" }))
         .catch(error => res.status(400).json({ error }));
       }
-    }else{
-      res.status(404).json({ error })
-      return
     }
 }

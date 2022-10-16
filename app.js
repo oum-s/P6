@@ -19,9 +19,6 @@ mongoose.connect('mongodb+srv://oumi:piiquante@cluster0.qs1r3qf.mongodb.net/sauc
 
   .catch(() =>console.log('Connexion à MongoDB échouée !'));
 
-app.use(cors());
-app.use(helmet());
-app.disable('x-powered-by');
 // on ajoute un middleware qui s'applique à toutes les routes envoyés à notre serveur donc on met aucun lien
 app.use((req, res, next) => {
   // on ajoute des header sur l'objet réponse
@@ -36,8 +33,12 @@ app.use((req, res, next) => {
 
 });
 
+app.use(cors());
+app.use(helmet());
+app.use(helmet({crossOriginResourcePolicy: false,})); 
+app.disable('x-powered-by');
 // ce middleware intercepte toutes les requêtes contenant du json et nous met à disposition ce contenue dans req.body
-app.use('/images', express.static(path.join(__dirname, 'images')));
+app.use('/images',express.static(path.join(__dirname,'images')));
 app.use(express.json());
 app.use('/api/sauces', saucesRoutes);
 app.use('/api/auth', userRoutes);
