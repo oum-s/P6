@@ -26,9 +26,9 @@ exports.getOneSauce = (req, res, next) => {
   .catch((error) => {res.status(404).json({error: error});});
 };
 
-exports.modifySauce = (req, res, next) => {
+exports.modifySauce = async (req, res, next) => {
   // verifier s'il y a un champ file dans mon objet
-  const sauceObject = req.file ? {
+  const sauceObject = await req.file ? {
     // si oui on le récup en parsan, sinon récupérer l'objet direct dans le corps de la requête
       ...JSON.parse(req.body.sauce),
       imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
@@ -97,7 +97,7 @@ exports.likeSauce = async (req, res, next) => {
         Sauce.updateOne({ _id: req.params.id}, {
           //incremente un like 
           $inc : { likes : 1 } ,
-          // ajoute la valeur 1 like par l'utilisateur à la sauce ds usersLiked
+          // ajoute la valeur 1 like par l'utilisateur à la sauce ds usersLiked pour pas qu'il puisse reliké après
           $push : { usersLiked : req.body.userId }
         })
         .then(() => res.status(201).json({message : 'Vous avez liké la sauce !'}))

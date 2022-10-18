@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require('express');
 // on appelle la méthode express via app
 const app = express();
@@ -7,18 +8,9 @@ const mongoose = require('mongoose');
 const userRoutes = require('./routes/user');
 const saucesRoutes = require('./routes/sauces');
 const path = require('path');
-const  limiteur  =  rateLimit ( { 
-	windowMs : 15  *  60  *  1000 ,  // 15 minutes 
-	max : 100 ,  // Limite chaque IP à 100 requêtes par `window` (ici, par 15 minutes) 
-	standardHeaders : true ,  // Return rate limit info dans les en-têtes `RateLimit-*` 
-	legacyHeaders : false ,  // Désactive les en-têtes `X-RateLimit-*` 
-} )
-
-// Appliquer le middleware de limitation de débit à toutes les requêtes 
-app.use( limiteur());
 
 
-mongoose.connect('mongodb+srv://oumi:piiquante@cluster0.qs1r3qf.mongodb.net/sauces?retryWrites=true&w=majority',
+mongoose.connect(`mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTERNAME}.mongodb.net/${process.env.MONGO_DBNAME}?retryWrites=true&w=majority`,
 
   { useNewUrlParser: true,
 
@@ -32,7 +24,7 @@ mongoose.connect('mongodb+srv://oumi:piiquante@cluster0.qs1r3qf.mongodb.net/sauc
 app.use((req, res, next) => {
   // on ajoute des header sur l'objet réponse
   // ici l'étoile ça veut dire tout le monde
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'localhost:4200');
   // on donne l'autorisation d'utiliser certaines en tête et autres
   res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
   
@@ -41,7 +33,6 @@ app.use((req, res, next) => {
   next();
 
 });
-
 app.use(cors());
 app.use(helmet());
 app.use(helmet({crossOriginResourcePolicy: false,})); 
